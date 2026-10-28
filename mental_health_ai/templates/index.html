@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutriGuide AI — Powered by IBM Granite</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+<!-- ═══════════════════════════════ HEADER ═══════════════════════════════════ -->
+<header class="app-header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="brand-icon">🥗</div>
+      <div class="brand-text">
+        <span class="brand-name">NutriGuide AI</span>
+        <span class="brand-sub">Powered by IBM Granite</span>
+      </div>
+    </div>
+    <nav class="header-nav">
+      <button class="nav-btn active" onclick="showSection('planner')">📋 Planner</button>
+      <button class="nav-btn" onclick="showSection('chat')">💬 Ask AI</button>
+      <button class="nav-btn" onclick="showSection('tips')">💡 Quick Tips</button>
+    </nav>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════ MAIN ════════════════════════════════════ -->
+<main class="app-main">
+
+  <!-- ─── ETHICS BANNER ─────────────────────────────────────────────────── -->
+  <div class="ethics-banner">
+    <span class="ethics-icon">🛡️</span>
+    <span>This AI follows IBM's ethical AI principles — providing helpful, respectful, and safe nutrition guidance.</span>
+  </div>
+
+  <!-- ═══════════════ SECTION 1: NUTRITION PLANNER ══════════════════════ -->
+  <section id="section-planner" class="content-section active">
+    <div class="section-header">
+      <h2>Personalized Nutrition Planner</h2>
+      <p>Fill in your details and receive a tailored 7-day nutrition plan.</p>
+    </div>
+
+    <div class="planner-layout">
+
+      <!-- ── USER FORM ───────────────────────────────────────────────── -->
+      <div class="form-card card">
+        <h3 class="card-title">👤 Your Profile</h3>
+
+        <form id="nutritionForm" onsubmit="generatePlan(event)">
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="name">Full Name <span class="req">*</span></label>
+              <input type="text" id="name" placeholder="e.g. Priya Sharma" required />
+            </div>
+            <div class="form-group">
+              <label for="age">Age <span class="req">*</span></label>
+              <input type="number" id="age" placeholder="e.g. 32" min="1" max="120" required />
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="diet">Diet Preference <span class="req">*</span></label>
+              <select id="diet" required>
+                <option value="">-- Select --</option>
+                <option value="vegetarian">🥦 Vegetarian</option>
+                <option value="vegan">🌱 Vegan</option>
+                <option value="non-vegetarian">🍗 Non-Vegetarian</option>
+                <option value="pescatarian">🐟 Pescatarian</option>
+                <option value="flexitarian">🥗 Flexitarian</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="activity">Activity Level</label>
+              <select id="activity">
+                <option value="sedentary">🛋️ Sedentary</option>
+                <option value="light">🚶 Lightly Active</option>
+                <option value="moderate" selected>🏃 Moderately Active</option>
+                <option value="very active">💪 Very Active</option>
+                <option value="athlete">🏋️ Athlete</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="medical">Medical History</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-item"><input type="checkbox" value="diabetes" onchange="updateMedical()" /> Diabetes</label>
+              <label class="checkbox-item"><input type="checkbox" value="hypertension" onchange="updateMedical()" /> High Blood Pressure</label>
+              <label class="checkbox-item"><input type="checkbox" value="high cholesterol" onchange="updateMedical()" /> High Cholesterol</label>
+              <label class="checkbox-item"><input type="checkbox" value="thyroid disorder" onchange="updateMedical()" /> Thyroid Disorder</label>
+              <label class="checkbox-item"><input type="checkbox" value="PCOS" onchange="updateMedical()" /> PCOS</label>
+              <label class="checkbox-item"><input type="checkbox" value="kidney disease" onchange="updateMedical()" /> Kidney Disease</label>
+              <label class="checkbox-item"><input type="checkbox" value="celiac disease" onchange="updateMedical()" /> Celiac / Gluten-Free</label>
+              <label class="checkbox-item"><input type="checkbox" value="lactose intolerance" onchange="updateMedical()" /> Lactose Intolerance</label>
+              <label class="checkbox-item"><input type="checkbox" value="none" onchange="updateMedical()" checked /> None</label>
+            </div>
+            <input type="hidden" id="medical" value="None" />
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="goal">Health Goal</label>
+              <select id="goal">
+                <option value="maintain a healthy lifestyle">⚖️ Maintain Weight</option>
+                <option value="lose weight safely">📉 Lose Weight</option>
+                <option value="gain muscle mass">💪 Gain Muscle</option>
+                <option value="manage chronic disease through diet">🩺 Manage Chronic Condition</option>
+                <option value="improve energy and vitality">⚡ Improve Energy</option>
+                <option value="eat more nutritiously">🥗 Eat Healthier</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="city">City <span class="req">*</span></label>
+              <input type="text" id="city" placeholder="e.g. Mumbai" required />
+            </div>
+            <div class="form-group">
+              <label for="country">Country <span class="req">*</span></label>
+              <input type="text" id="country" placeholder="e.g. India" required />
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full" id="generateBtn">
+            <span class="btn-icon">🤖</span> Generate My Nutrition Plan
+          </button>
+        </form>
+      </div>
+
+      <!-- ── PLAN OUTPUT ─────────────────────────────────────────────── -->
+      <div class="output-card card" id="planCard">
+        <div class="output-placeholder" id="planPlaceholder">
+          <div class="placeholder-icon">🥗</div>
+          <h3>Your Personalized Plan Appears Here</h3>
+          <p>Fill in your profile on the left and click <strong>Generate My Nutrition Plan</strong> to receive AI-powered dietary guidance tailored to you.</p>
+          <div class="feature-list">
+            <div class="feature-item">✅ 7-Day Meal Plan</div>
+            <div class="feature-item">✅ Caloric & Macro Targets</div>
+            <div class="feature-item">✅ Medical Condition Adapted</div>
+            <div class="feature-item">✅ Locally Relevant Foods</div>
+            <div class="feature-item">✅ Lifestyle Tips Included</div>
+          </div>
+        </div>
+
+        <div id="planLoading" class="loading-state hidden">
+          <div class="loader-ring"></div>
+          <p class="loading-text">IBM Granite is crafting your personalized plan…</p>
+          <p class="loading-sub">Analyzing your profile, medical history, and location</p>
+        </div>
+
+        <div id="planOutput" class="plan-output hidden">
+          <div class="plan-header">
+            <span class="plan-badge">🤖 AI Generated</span>
+            <button class="btn btn-outline btn-sm" onclick="copyPlan()">📋 Copy Plan</button>
+            <button class="btn btn-outline btn-sm" onclick="printPlan()">🖨️ Print</button>
+          </div>
+          <div id="planContent" class="plan-content"></div>
+        </div>
+      </div>
+
+    </div><!-- /planner-layout -->
+  </section>
+
+  <!-- ═══════════════ SECTION 2: AI CHAT ════════════════════════════════ -->
+  <section id="section-chat" class="content-section">
+    <div class="section-header">
+      <h2>Ask NutriGuide AI</h2>
+      <p>Get answers to your common nutrition and health queries.</p>
+    </div>
+
+    <div class="chat-layout">
+      <div class="chat-card card">
+        <div class="chat-window" id="chatWindow">
+          <div class="chat-message bot-message">
+            <div class="msg-avatar">🤖</div>
+            <div class="msg-bubble">
+              <p>Hi! I'm <strong>NutriGuide</strong>, your AI nutrition assistant powered by IBM Granite. I'm here to help with your dietary questions, meal ideas, nutrient information, and more.</p>
+              <p>How can I help you today? 😊</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="chat-suggestions">
+          <span class="suggestion-label">Quick questions:</span>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">What foods are high in protein?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">Best breakfast for diabetes?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">How much water should I drink?</button>
+          <button class="suggestion-chip" onclick="sendSuggestion(this)">Healthy snacks for weight loss?</button>
+        </div>
+
+        <div class="chat-input-bar">
+          <input type="text" id="chatInput" placeholder="Ask a nutrition question…" onkeypress="handleChatKey(event)" />
+          <button class="btn btn-primary btn-icon-only" onclick="sendChatMessage()" id="chatSendBtn" title="Send">➤</button>
+        </div>
+      </div>
+
+      <div class="chat-info-panel">
+        <div class="info-card card">
+          <h4>🎯 What I Can Help With</h4>
+          <ul>
+            <li>Nutrient content of foods</li>
+            <li>Meal ideas and recipes</li>
+            <li>Diet for medical conditions</li>
+            <li>Healthy eating habits</li>
+            <li>Weight management tips</li>
+            <li>Hydration guidance</li>
+            <li>Food allergies & intolerances</li>
+            <li>Superfoods & supplements</li>
+          </ul>
+        </div>
+        <div class="info-card card ethics-card">
+          <h4>🛡️ AI Ethics & Safety</h4>
+          <ul>
+            <li>Follows IBM ethical AI guidelines</li>
+            <li>Never recommends harmful practices</li>
+            <li>Provides evidence-based advice</li>
+            <li>Respects user privacy</li>
+            <li>Includes medical disclaimers</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ SECTION 3: QUICK TIPS ═════════════════════════════ -->
+  <section id="section-tips" class="content-section">
+    <div class="section-header">
+      <h2>Evidence-Based Nutrition Tips</h2>
+      <p>Quick, science-backed tips to support your health journey.</p>
+    </div>
+    <div class="tips-grid" id="tipsGrid">
+      <div class="tips-loading">Loading tips…</div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ═══════════════════════════ FOOTER ═══════════════════════════════════════ -->
+<footer class="app-footer">
+  <div class="footer-inner">
+    <p>⚠️ <strong>Medical Disclaimer:</strong> NutriGuide AI provides general nutrition information for educational purposes only. It is NOT a substitute for professional medical advice. Consult your healthcare provider before making dietary changes, especially if you have medical conditions.</p>
+    <p class="footer-credit">Built with IBM Granite LLM &amp; IBM WatsonX AI • NutriGuide AI © 2025</p>
+  </div>
+</footer>
+
+<script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
